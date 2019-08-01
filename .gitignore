@@ -1,0 +1,17 @@
+######################
+# Project Specific
+######################
+
+######################
+# Intellij
+######################
+.idea/
+*.iml
+*.iws
+*.ipr
+*.ids
+*.orig
+classes/
+out/
+build/
+.gradle/
