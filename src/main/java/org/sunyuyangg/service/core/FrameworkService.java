@@ -30,7 +30,7 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
 
     int serviceInvalidSerialNumber;
 
-    private static String helpMsg;
+    private static String helpMsg ;
 
     @Nullable
     private ConfigurableEnvironment environment;
@@ -47,13 +47,16 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
     /** ApplicationContext id to assign */
     @Nullable
     private String contextId;
+    private final String version;
 
-    public FrameworkService(int serviceInvalidSerialNumber) {
+    public FrameworkService(int serviceInvalidSerialNumber, String version) {
         this.serviceInvalidSerialNumber = serviceInvalidSerialNumber;
+        this.version = version;
     }
 
-    public FrameworkService(int serviceInvalidSerialNumber, ApplicationContext applicationContext) {
+    public FrameworkService(int serviceInvalidSerialNumber, String version, ApplicationContext applicationContext) {
         this.serviceInvalidSerialNumber = serviceInvalidSerialNumber;
+        this.version = version;
         this.context = applicationContext;
     }
 
@@ -245,7 +248,10 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
 
 
             // Assign the help text string for the service
-            helpMsg = "*** " + serviceName + " Service Help ***" + lineSep + lineSep ;
+            helpMsg = "*** " + serviceName + " Service Help ***" + lineSep + lineSep
+                    + "version"
+                    + lineSep
+                    + "help";
 
             // Register Help Data
             registerHelpData(
@@ -263,13 +269,21 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
     }
 
     public static String addHelpMsg(String msg) {
-        return helpMsg = lineSep + msg + lineSep;
+        return helpMsg = helpMsg + lineSep + msg + lineSep;
     }
 
     @Override
     public STAFResult acceptRequest(RequestInfo requestInfo) {
         STAFResult result = new STAFResult(STAFResult.Ok);
         try {
+            String action = Util.getActionStr(requestInfo.request);
+            if(action.equalsIgnoreCase("help")) {
+                return new STAFResult(STAFResult.Ok, helpMsg);
+            }
+
+            if(action.equalsIgnoreCase("version")) {
+                return new STAFResult(STAFResult.Ok, version);
+            }
             doService(requestInfo, result);
             return result;
         } catch (Exception e) {

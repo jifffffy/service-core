@@ -44,6 +44,10 @@ public class OptionMappingInfo {
         this.optionNeeds.forEach(optionNeed -> this.commandParser.addOptionNeed(optionNeed.needers, optionNeed.needees));
     }
 
+    public List<Option> getOptions() {
+        return options;
+    }
+
     public STAFCommandParseResult getParseResult() {
         return parseResult;
     }
@@ -130,7 +134,7 @@ public class OptionMappingInfo {
     }
 
 
-    private static class Option {
+    public static class Option {
         public String name;
         public int maxAllowed;
         public int valueRequirement;

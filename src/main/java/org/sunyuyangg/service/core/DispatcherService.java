@@ -81,12 +81,12 @@ public class DispatcherService extends FrameworkService {
         }
     }
 
-    public DispatcherService(int serviceInvalidSerialNumber) {
-        super(serviceInvalidSerialNumber);
+    public DispatcherService(int serviceInvalidSerialNumber, String version) {
+        super(serviceInvalidSerialNumber, version);
     }
 
-    public DispatcherService(int serviceInvalidSerialNumber, ApplicationContext applicationContext) {
-        super(serviceInvalidSerialNumber, applicationContext);
+    public DispatcherService(int serviceInvalidSerialNumber, String version, ApplicationContext applicationContext) {
+        super(serviceInvalidSerialNumber, version, applicationContext);
     }
 
 

@@ -28,7 +28,7 @@ public class DispatcherServiceTests {
                 null,
                 0,
                 "");
-        sampleDispatcherService = new DispatcherService(1000, new AnnotationConfigApplicationContext(CustomConfig.class));
+        sampleDispatcherService = new DispatcherService(1000,"1.0", new AnnotationConfigApplicationContext(CustomConfig.class));
         sampleDispatcherService.init(initInfo);
         objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -48,6 +48,14 @@ public class DispatcherServiceTests {
         Person person = new Person("2121", 23);
         String personJson = objectMapper.writeValueAsString(person);
         RequestInfo requestInfo = createRequestInfo("TestController person " + STAFUtil.wrapData(personJson));
+        STAFResult result = sampleDispatcherService.acceptRequest(requestInfo);
+        Logger.info("result: rc = {}, message={}", result.rc, result.result);
+        assertTrue("OK", result.rc == STAFResult.Ok);
+    }
+
+    @Test
+    public void helpRequest() {
+        RequestInfo requestInfo = createRequestInfo("help ");
         STAFResult result = sampleDispatcherService.acceptRequest(requestInfo);
         Logger.info("result: rc = {}, message={}", result.rc, result.result);
         assertTrue("OK", result.rc == STAFResult.Ok);

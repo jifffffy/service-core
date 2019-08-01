@@ -247,6 +247,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         return this.pathMatcher;
     }
 
+    protected abstract void registerHelp(T mapping);
+
     /**
      * A registry that maintains all mappings to handler methods, exposing methods
      * to perform lookups and providing concurrent access.
@@ -314,6 +316,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
                     name = getNamingStrategy().getName(handlerMethod, mapping);
                     addMappingName(name, handlerMethod);
                 }
+
+                registerHelp(mapping);
 
                 this.registry.put(mapping, new MappingRegistration<>(mapping, handlerMethod, name));
             } finally {
