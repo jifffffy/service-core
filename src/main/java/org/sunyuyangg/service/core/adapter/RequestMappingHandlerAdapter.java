@@ -13,7 +13,8 @@ import org.sunyuyangg.service.core.handler.HandlerMethod;
 import org.sunyuyangg.service.core.handler.ServiceInvocableHandlerMethod;
 import org.sunyuyangg.service.core.support.HandlerMethodArgumentResolver;
 import org.sunyuyangg.service.core.support.HandlerMethodArgumentResolverComposite;
-import org.sunyuyangg.service.core.support.SampleHandlerMethodArgumentResolver;
+import org.sunyuyangg.service.core.support.JsonHandlerMethodArgumentResolver;
+import org.sunyuyangg.service.core.support.PrimaryHandlerMethodArgumentResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
      */
     private List<HandlerMethodArgumentResolver> getDefaultArgumentResolvers() {
         List<HandlerMethodArgumentResolver> resolvers = new ArrayList<>();
-        resolvers.add(new SampleHandlerMethodArgumentResolver());
+        resolvers.add(new PrimaryHandlerMethodArgumentResolver());
+        resolvers.add(new JsonHandlerMethodArgumentResolver());
         // Custom arguments
         if (getCustomArgumentResolvers() != null) {
             resolvers.addAll(getCustomArgumentResolvers());

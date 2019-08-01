@@ -65,6 +65,14 @@ public class ComputerSystemServiceTest {
         assertTrue("OK", result.rc == STAFResult.Ok);
     }
 
+    @Test
+    public void usbTest() {
+        RequestInfo requestInfo = createRequestInfo("query usb");
+        STAFResult result = computerSystemService.acceptRequest(requestInfo);
+        Logger.info("result: rc = {}, message={}", result.rc, result.result);
+        assertTrue("OK", result.rc == STAFResult.Ok);
+    }
+
     private RequestInfo createRequestInfo(String request) {
         return new RequestInfo(
                 "12345678",

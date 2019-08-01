@@ -9,13 +9,13 @@ import org.springframework.core.MethodParameter;
 
 import java.io.IOException;
 
-public class SampleHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
+public class JsonHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
     private ObjectMapper objectMapper ;
     private Object result;
 
 
-    public SampleHandlerMethodArgumentResolver() {
+    public JsonHandlerMethodArgumentResolver() {
         objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);

@@ -9,16 +9,14 @@ import org.sunyuyangg.service.core.model.Cpu;
 import org.sunyuyangg.service.core.model.Summary;
 import org.sunyuyangg.service.core.model.Tick;
 import oshi.SystemInfo;
-import oshi.hardware.CentralProcessor;
-import oshi.hardware.ComputerSystem;
-import oshi.hardware.GlobalMemory;
-import oshi.hardware.HardwareAbstractionLayer;
+import oshi.hardware.*;
 import oshi.software.os.OperatingSystem;
 import oshi.util.FormatUtil;
 import oshi.util.Util;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -142,5 +140,18 @@ public class QueryController {
             cpu.setSummary(summary);
         }
         return cpu;
+    }
+
+    @OptionMapping(
+            options = {
+                    @Option(name = "usb", maxAllowed = 1, valueRequirement = STAFCommandParser.VALUENOTALLOWED),
+                    @Option(name = "tree", maxAllowed = 1, valueRequirement = STAFCommandParser.VALUEALLOWED)
+            },
+            optionNeeds = {},
+            optionGroup = {}
+
+    )
+    public List<UsbDevice> usb(boolean tree) {
+        return Arrays.asList(hal.getUsbDevices(tree));
     }
 }
