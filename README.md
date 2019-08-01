@@ -4,26 +4,65 @@ Sample STAF service Development framework using the code of spring mvc
 # How to use
 ```
 @Controller
-public class TestController {
+public class QueryController {
 
-    @OptionMapping(
-            name = "test",
-            options = {@Option(name = "demo", maxAllowed = 1, valueRequirement= STAFCommandParser.VALUEREQUIRED)},
-            optionGroup = {},
-            optionNeeds = {}
-    )
-    public String test(String demo) {
-        return demo + demo;
+    private SystemInfo si;
+    private HardwareAbstractionLayer hal;
+    private OperatingSystem os;
+
+    public QueryController() {
+    }
+
+    @PostConstruct
+    private void init() {
+        si = new SystemInfo();
+        hal = si.getHardware();
+        os = si.getOperatingSystem();
     }
 
     @OptionMapping(
-            options = {@Option(name = "person", maxAllowed = 1, valueRequirement= STAFCommandParser.VALUEREQUIRED)},
-            optionGroup = {},
-            optionNeeds = {}
+            options = {
+                    @Option(name = "ComputerSystem", maxAllowed = 1, valueRequirement = STAFCommandParser.VALUENOTALLOWED)
+            },
+            optionNeeds = {},
+            optionGroup = {}
+
     )
-    public Person person(Person person) {
-        person.setAge(person.getAge() + 10);
-        return person;
+    public ComputerSystem computerSystem() {
+        return hal.getComputerSystem();
     }
+
+    @OptionMapping(
+            options = {
+                    @Option(name = "memory", maxAllowed = 1, valueRequirement = STAFCommandParser.VALUENOTALLOWED)
+            },
+            optionNeeds = {},
+            optionGroup = {}
+
+    )
+    public GlobalMemory memory() {
+        return hal.getMemory();
+    }
+
+    @OptionMapping(
+            options = {
+                    @Option(name = "processor", maxAllowed = 1, valueRequirement = STAFCommandParser.VALUENOTALLOWED)
+            },
+            optionNeeds = {},
+            optionGroup = {}
+
+    )
+    public CentralProcessor processor() {
+        return hal.getProcessor();
+    }
+
+    @OptionMapping(
+            options = {
+                    @Option(name = "cpu", maxAllowed = 1, valueRequirement = STAFCommandParser.VALUENOTALLOWED)
+            },
+            optionNeeds = {},
+            optionGroup = {}
+
+    )
 }
 ```

@@ -1,10 +1,8 @@
 package org.sunyuyangg.service.core;
 
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@org.springframework.context.annotation.Configuration
 @ComponentScan(basePackages = "org.sunyuyangg.service.core.controller")
-public class CustomConfig {
-
+public class Configuration {
 }
