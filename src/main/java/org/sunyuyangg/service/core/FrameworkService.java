@@ -299,6 +299,7 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
             }
             for(int i =1; i<strings.length; i++) {
                 stringBuffer.append(strings[i]);
+                stringBuffer.append(" ");
             }
             helpMsg = helpMsg + lineSep + stringBuffer.toString() + lineSep;
             return;

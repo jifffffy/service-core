@@ -41,7 +41,7 @@ public abstract class OptionMappingInfoHandlerMapping extends AbstractHandlerMet
 	private String createHelp(OptionMappingInfo.Option option) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append(option.name.toUpperCase() );
-		stringBuffer.append(" ");
+
 		if(option.valueRequirement == STAFCommandParser.VALUEREQUIRED) {
 			stringBuffer.append("<" + option.name.toLowerCase() + ">");
 		}
@@ -49,6 +49,7 @@ public abstract class OptionMappingInfoHandlerMapping extends AbstractHandlerMet
 		if(option.valueRequirement == STAFCommandParser.VALUEALLOWED) {
 			stringBuffer.append("[" + option.name.toLowerCase() + "]");
 		}
+		stringBuffer.append(" ");
 		return stringBuffer.toString();
 	}
 }
