@@ -41,13 +41,13 @@ public abstract class OptionMappingInfoHandlerMapping extends AbstractHandlerMet
 	private String createHelp(OptionMappingInfo.Option option) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append(option.name.toUpperCase() );
-		stringBuffer.append("	");
+		stringBuffer.append(" ");
 		if(option.valueRequirement == STAFCommandParser.VALUEREQUIRED) {
-			stringBuffer.append(" <" + option.name.toLowerCase() + "> ");
+			stringBuffer.append("<" + option.name.toLowerCase() + ">");
 		}
 
 		if(option.valueRequirement == STAFCommandParser.VALUEALLOWED) {
-			stringBuffer.append(" [" + option.name.toLowerCase() + "] ");
+			stringBuffer.append("[" + option.name.toLowerCase() + "]");
 		}
 		return stringBuffer.toString();
 	}
