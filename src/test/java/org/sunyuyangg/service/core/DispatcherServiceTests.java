@@ -37,7 +37,7 @@ public class DispatcherServiceTests {
 
     @Test
     public void okRequest() throws Exception {
-        RequestInfo requestInfo = createRequestInfo("TestController demo 123456");
+        RequestInfo requestInfo = createRequestInfo("Test demo 123456");
         STAFResult result = sampleDispatcherService.acceptRequest(requestInfo);
         Logger.info("result: rc = {}, message={}", result.rc, result.result);
         assertTrue("OK", result.rc == STAFResult.Ok);
@@ -47,7 +47,7 @@ public class DispatcherServiceTests {
     public void personRequest() throws Exception{
         Person person = new Person("2121", 23);
         String personJson = objectMapper.writeValueAsString(person);
-        RequestInfo requestInfo = createRequestInfo("TestController person " + STAFUtil.wrapData(personJson));
+        RequestInfo requestInfo = createRequestInfo("Test person " + STAFUtil.wrapData(personJson));
         STAFResult result = sampleDispatcherService.acceptRequest(requestInfo);
         Logger.info("result: rc = {}, message={}", result.rc, result.result);
         assertTrue("OK", result.rc == STAFResult.Ok);

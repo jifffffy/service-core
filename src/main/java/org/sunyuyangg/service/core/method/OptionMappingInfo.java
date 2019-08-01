@@ -58,7 +58,7 @@ public class OptionMappingInfo {
     }
 
     public String getMappingPath() {
-        return this.options.stream().map(option -> option.name.toUpperCase()).collect(Collectors.joining("#"));
+        return this.options.stream().limit(2).map(option -> option.name.toUpperCase()).collect(Collectors.joining("#"));
     }
 
     public static Builder builder(int maxArgs, boolean caseSensitive) {

@@ -19,6 +19,11 @@ import org.springframework.core.env.EnvironmentCapable;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class FrameworkService implements STAFServiceInterfaceLevel30, EnvironmentCapable {
 
@@ -31,6 +36,8 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
     int serviceInvalidSerialNumber;
 
     private static String helpMsg ;
+
+    private static List<String> helpCommands = new ArrayList<>();
 
     @Nullable
     private ConfigurableEnvironment environment;
@@ -268,8 +275,38 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
         return new STAFResult(STAFResult.Ok);
     }
 
-    public static String addHelpMsg(String msg) {
-        return helpMsg = helpMsg + lineSep + msg + lineSep;
+    public static void addHelpMsg(String msg) {
+        if(StringUtils.isEmpty(msg)) {
+            return ;
+        }
+        String[] strings = msg.split(" ");
+        if(strings.length == 0) {
+            return ;
+        }
+
+        if(strings.length == 1) {
+            helpCommands.add(strings[0]);
+            helpMsg = helpMsg + lineSep + msg + lineSep;
+            return;
+        }
+
+        Optional<String> stringOptional = helpCommands.stream().filter(s -> s.equalsIgnoreCase(strings[0])).findAny();
+        if(stringOptional.isPresent()) {
+            StringBuffer stringBuffer = new StringBuffer();
+            int indent = strings[0].length();
+            for(int i = 0; i <= indent; i++) {
+                stringBuffer.append(" ");
+            }
+            for(int i =1; i<strings.length; i++) {
+                stringBuffer.append(strings[i]);
+            }
+            helpMsg = helpMsg + lineSep + stringBuffer.toString() + lineSep;
+            return;
+        }
+
+        helpCommands.add(strings[0]);
+        helpMsg = helpMsg + lineSep + msg + lineSep;
+        return;
     }
 
     @Override

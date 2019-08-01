@@ -1,6 +1,7 @@
 package org.sunyuyangg.service.core.handler;
 
 import com.ibm.staf.service.STAFServiceInterfaceLevel30;
+import org.pmw.tinylog.Logger;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -95,7 +96,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
                                     userType.getName() + "]: " + method, ex);
                         }
                     });
-            logger.trace("Mapped " + methods.size() + " handler method(s) for " + userType + ": " + methods);
+            Logger.info("Mapped " + methods.size() + " handler method(s) for " + userType + ": " + methods);
             methods.forEach((method, mapping) -> {
                 Method invocableMethod = AopUtils.selectInvocableMethod(method, userType);
                 registerHandlerMethod(handler, invocableMethod, mapping);
@@ -121,7 +122,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         if (commands.length < 2) {
             throw new Exception("request format is wrong!");
         }
-        return Arrays.asList(commands).stream().map(String::toUpperCase).collect(Collectors.joining("#"));
+        return Arrays.asList(commands).stream().limit(2).map(String::toUpperCase).collect(Collectors.joining("#"));
     }
 
     private HandlerMethod lookupHandlerMethod(String lookupPath, STAFServiceInterfaceLevel30.RequestInfo request) throws Exception {

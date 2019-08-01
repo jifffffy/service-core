@@ -26,10 +26,13 @@ public class OptionMappingHandlerMapping extends OptionMappingInfoHandlerMapping
         if (optionMapping == null) {
             return null;
         }
-
         OptionMappingInfo.Builder builder = OptionMappingInfo.builder(optionMapping.maxArgs(), optionMapping.caseSensitive());
         builder.name(optionMapping.name());
-        builder.option(handlerType.getSimpleName().toUpperCase(), 1, STAFCommandParser.VALUENOTALLOWED);
+        String name = handlerType.getSimpleName().toUpperCase();
+        if(name.contains("CONTROLLER")) {
+            name = name.substring(0, name.indexOf("CONTROLLER"));
+        }
+        builder.option(name, 1, STAFCommandParser.VALUENOTALLOWED);
         Arrays.asList(optionMapping.options()).forEach(option -> builder.option(option.name(), option.maxAllowed(), option.valueRequirement()));
         Arrays.asList(optionMapping.optionGroup()).forEach(optionGroup -> builder.optionGroup(optionGroup.names(), optionGroup.min(), optionGroup.max()));
         Arrays.asList(optionMapping.optionNeeds()).forEach(optionNeeds -> builder.optionNeed(optionNeeds.needers(), optionNeeds.needees()));
