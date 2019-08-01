@@ -256,9 +256,9 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
 
             // Assign the help text string for the service
             helpMsg = "*** " + serviceName + " Service Help ***" + lineSep + lineSep
-                    + "version"
+                    + "VERSION"
                     + lineSep
-                    + "help";
+                    + "HELP";
 
             // Register Help Data
             registerHelpData(
