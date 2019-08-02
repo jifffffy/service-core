@@ -18,6 +18,7 @@ public class SampleSessionManager<T extends Session> extends Vector<T> implement
         return elementAt(index);
     }
 
+
     @Override
     public int addSession(T session) {
         int addIndex = nextNewSessionIndex;

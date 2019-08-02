@@ -7,6 +7,10 @@ import com.ibm.staf.STAFUtil;
 import com.ibm.staf.service.STAFServiceInterfaceLevel30;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.config.SingletonBeanRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.ApplicationListener;
@@ -20,6 +24,7 @@ import org.springframework.core.env.StandardEnvironment;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.sunyuyangg.service.core.support.DefaultHandlerClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +78,7 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
         long elapsedTime = System.currentTimeMillis() - startTime;
         try {
             this.context = initApplicationContext();
+            registerBeans();
             initFrameworkService();
         }catch (Exception e) {
             Logger.error("Context initialization failed : {}", e);
@@ -80,6 +86,16 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
         }
 
         Logger.info("FrameworkService '" + getServiceName() + "': initialization completed in " + elapsedTime + " ms");
+    }
+
+    protected void registerBeans() {
+        registerBean( "handlerClient", new DefaultHandlerClient(this.handle, this.localMachineName));
+    }
+
+    private void registerBean(String beanName, Object bean) {
+        ConfigurableApplicationContext configContext = (ConfigurableApplicationContext)this.context;
+        SingletonBeanRegistry beanRegistry = configContext.getBeanFactory();
+        beanRegistry.registerSingleton(beanName, bean);
     }
 
     protected  void initFrameworkService(){

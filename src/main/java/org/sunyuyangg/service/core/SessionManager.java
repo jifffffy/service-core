@@ -2,7 +2,6 @@ package org.sunyuyangg.service.core;
 
 import org.sunyuyangg.service.core.exception.InvalidSessionIDException;
 
-import java.util.HashMap;
 
 public interface SessionManager<T> {
 
