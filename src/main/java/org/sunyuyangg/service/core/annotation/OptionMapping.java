@@ -20,4 +20,6 @@ public @interface OptionMapping {
     OptionGroup[] optionGroup() ;
 
     OptionNeeds[] optionNeeds();
+
+    String desc() default "";
  }

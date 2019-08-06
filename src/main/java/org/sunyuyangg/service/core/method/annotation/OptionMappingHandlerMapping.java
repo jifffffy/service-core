@@ -33,6 +33,7 @@ public class OptionMappingHandlerMapping extends OptionMappingInfoHandlerMapping
             name = name.substring(0, name.indexOf("CONTROLLER"));
         }
         builder.option(name, 1, STAFCommandParser.VALUENOTALLOWED);
+        builder.desc(optionMapping.desc());
         Arrays.asList(optionMapping.options()).forEach(option -> builder.option(option.name(), option.maxAllowed(), option.valueRequirement()));
         Arrays.asList(optionMapping.optionGroup()).forEach(optionGroup -> builder.optionGroup(optionGroup.names(), optionGroup.min(), optionGroup.max()));
         Arrays.asList(optionMapping.optionNeeds()).forEach(optionNeeds -> builder.optionNeed(optionNeeds.needers(), optionNeeds.needees()));

@@ -1,7 +1,5 @@
 package org.sunyuyangg.service.core.method;
 
-
-import com.ibm.staf.service.STAFCommandParser;
 import com.ibm.staf.service.STAFServiceInterfaceLevel30;
 import org.sunyuyangg.service.core.FrameworkService;
 import org.sunyuyangg.service.core.handler.AbstractHandlerMethodMapping;
@@ -30,23 +28,6 @@ public abstract class OptionMappingInfoHandlerMapping extends AbstractHandlerMet
 
 	@Override
 	protected void registerHelp(OptionMappingInfo mapping) {
-		StringBuffer stringBuffer = new StringBuffer();
-		mapping.getOptions().stream().forEach(option -> stringBuffer.append(createHelp(option)));
-		FrameworkService.addHelpMsg(stringBuffer.toString());
-	}
-
-	private String createHelp(OptionMappingInfo.Option option) {
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append(option.name.toUpperCase() );
-
-		if(option.valueRequirement == STAFCommandParser.VALUEREQUIRED) {
-			stringBuffer.append("<" + option.name.toLowerCase() + ">");
-		}
-
-		if(option.valueRequirement == STAFCommandParser.VALUEALLOWED) {
-			stringBuffer.append("[" + option.name.toLowerCase() + "]");
-		}
-		stringBuffer.append(" ");
-		return stringBuffer.toString();
+		FrameworkService.addHelpMessage(new HelpMessage(mapping));
 	}
 }

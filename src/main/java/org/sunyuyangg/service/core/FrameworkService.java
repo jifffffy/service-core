@@ -1,16 +1,10 @@
 package org.sunyuyangg.service.core;
 
-import com.ibm.staf.STAFException;
-import com.ibm.staf.STAFHandle;
-import com.ibm.staf.STAFResult;
-import com.ibm.staf.STAFUtil;
+import com.ibm.staf.*;
 import com.ibm.staf.service.STAFServiceInterfaceLevel30;
 import org.pmw.tinylog.Logger;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.ApplicationListener;
@@ -24,10 +18,12 @@ import org.springframework.core.env.StandardEnvironment;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.sunyuyangg.service.core.method.HelpMessage;
 import org.sunyuyangg.service.core.support.DefaultHandlerClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class FrameworkService implements STAFServiceInterfaceLevel30, EnvironmentCapable {
@@ -41,8 +37,8 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
     int serviceInvalidSerialNumber;
 
     private static String helpMsg ;
-
-    private static List<String> helpCommands = new ArrayList<>();
+    private static List<HelpMessage> helpMessages = new ArrayList<>();
+    private static STAFMapClassDefinition helpDefinition;
 
     @Nullable
     private ConfigurableEnvironment environment;
@@ -252,6 +248,7 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
             serviceName = info.name;
             handle = new STAFHandle("STAF/Service/" + info.name);
         } catch (STAFException e) {
+            Logger.error(e);
             return new STAFResult(STAFResult.STAFRegistrationError, e.toString());
         }
 
@@ -269,19 +266,13 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
                 return res;
             localMachineName = res.result;
 
-
-            // Assign the help text string for the service
-            helpMsg = "*** " + serviceName + " Service Help ***" + lineSep + lineSep
-                    + "VERSION"
-                    + lineSep
-                    + "HELP";
-
             // Register Help Data
             registerHelpData(
                     serviceInvalidSerialNumber,
                     "Invalid serial number",
                     "A non-numeric value was specified for serial number");
 
+            initHelpData();
             initServiceBean();
             initStrategies(context);
 
@@ -291,39 +282,21 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
         return new STAFResult(STAFResult.Ok);
     }
 
-    public static void addHelpMsg(String msg) {
-        if(StringUtils.isEmpty(msg)) {
-            return ;
-        }
-        String[] strings = msg.split(" ");
-        if(strings.length == 0) {
-            return ;
-        }
+    private void initHelpData() {
+        // Assign the help text string for the service
+        helpDefinition = new STAFMapClassDefinition(this.serviceName + "/help");
+        helpDefinition.addKey("command", "Command");
+        helpDefinition.addKey("options", "Options");
+        helpDefinition.addKey("description", "Description");
+    }
 
-        if(strings.length == 1) {
-            helpCommands.add(strings[0]);
-            helpMsg = helpMsg + lineSep + msg + lineSep;
-            return;
+    public static void addHelpMessage(HelpMessage help) {
+        Optional<HelpMessage> helpMessageOptional = helpMessages.stream().filter(helpMessage -> helpMessage.getCommand().equals(help.getCommand())).findAny();
+        if(helpMessageOptional.isPresent()) {
+            help.setCommand("");
         }
-
-        Optional<String> stringOptional = helpCommands.stream().filter(s -> s.equalsIgnoreCase(strings[0])).findAny();
-        if(stringOptional.isPresent()) {
-            StringBuffer stringBuffer = new StringBuffer();
-            int indent = strings[0].length();
-            for(int i = 0; i <= indent; i++) {
-                stringBuffer.append(" ");
-            }
-            for(int i =1; i<strings.length; i++) {
-                stringBuffer.append(strings[i]);
-                stringBuffer.append(" ");
-            }
-            helpMsg = helpMsg + lineSep + stringBuffer.toString() + lineSep;
-            return;
-        }
-
-        helpCommands.add(strings[0]);
-        helpMsg = helpMsg + lineSep + msg + lineSep;
-        return;
+        helpMessages.add(help);
+        helpMsg = null;
     }
 
     @Override
@@ -332,7 +305,7 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
         try {
             String action = Util.getActionStr(requestInfo.request);
             if(action.equalsIgnoreCase("help")) {
-                return new STAFResult(STAFResult.Ok, helpMsg);
+                return getHelpResult();
             }
 
             if(action.equalsIgnoreCase("version")) {
@@ -344,6 +317,28 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
             Logger.error(e);
             return new STAFResult(STAFResult.UnknownError, e.getMessage());
         }
+    }
+
+    private STAFResult getHelpResult() {
+        if(StringUtils.isEmpty(helpMsg)) {
+            STAFMarshallingContext mc = new STAFMarshallingContext();
+            mc.setMapClassDefinition(helpDefinition);
+            List resultList = new ArrayList();
+            if (helpMessages.size() > 0)
+            {
+                for(HelpMessage helpMessage: helpMessages) {
+                    Map resultMap = helpDefinition.createInstance();
+                    resultMap.put("command", helpMessage.getCommand());
+                    resultMap.put("options", helpMessage.getOptions());
+                    resultMap.put("description", helpMessage.getDescription());
+                    resultList.add(resultMap);
+                }
+            }
+            mc.setRootObject(resultList);
+            helpMsg = mc.marshall();
+        }
+
+        return new STAFResult(STAFResult.Ok, helpMsg);
     }
 
     protected abstract void doService(RequestInfo request, STAFResult response) throws Exception;

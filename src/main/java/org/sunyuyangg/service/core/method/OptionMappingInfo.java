@@ -19,13 +19,21 @@ public class OptionMappingInfo {
     private List<Option> options;
     private List<OptionGroup> optionGroups;
     private List<OptionNeed> optionNeeds;
+    private String desc;
     private STAFCommandParser commandParser;
     private STAFCommandParseResult parseResult;
 
-    public OptionMappingInfo(String name, int maxArgs, boolean caseSensitive, List<Option> options, List<OptionGroup> optionGroups, List<OptionNeed> optionNeeds) {
+    public OptionMappingInfo(String name,
+                             int maxArgs,
+                             boolean caseSensitive,
+                             String desc,
+                             List<Option> options,
+                             List<OptionGroup> optionGroups,
+                             List<OptionNeed> optionNeeds) {
         this.name = name;
         this.maxArgs = maxArgs;
         this.caseSensitive = caseSensitive;
+        this.desc = desc;
         this.options = options;
         this.optionGroups = optionGroups;
         this.optionNeeds = optionNeeds;
@@ -33,7 +41,7 @@ public class OptionMappingInfo {
     }
 
     public OptionMappingInfo(OptionMappingInfo copy, STAFCommandParseResult parseResult) {
-        this(copy.name, copy.maxArgs, copy.caseSensitive, copy.options, copy.optionGroups, copy.optionNeeds);
+        this(copy.name, copy.maxArgs, copy.caseSensitive,copy.desc, copy.options, copy.optionGroups, copy.optionNeeds);
         this.parseResult = parseResult;
     }
 
@@ -46,6 +54,10 @@ public class OptionMappingInfo {
 
     public List<Option> getOptions() {
         return options;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 
     public STAFCommandParseResult getParseResult() {
@@ -83,6 +95,7 @@ public class OptionMappingInfo {
         Builder option(String name, int maxAllowed, int valueRequirement);
         Builder optionGroup(String names, int min, int max);
         Builder optionNeed(String needers, String needees);
+        Builder desc(String desc);
         OptionMappingInfo build();
     }
 
@@ -90,6 +103,7 @@ public class OptionMappingInfo {
 
         private int maxArgs;
         private boolean caseSensitive;
+        private String desc;
         private List<Option> options = new ArrayList<>();
         private List<OptionGroup> optionGroups = new ArrayList<>();
         private List<OptionNeed> optionNeeds = new ArrayList<>();
@@ -128,8 +142,14 @@ public class OptionMappingInfo {
         }
 
         @Override
+        public Builder desc(String desc) {
+            this.desc = desc;
+            return this;
+        }
+
+        @Override
         public OptionMappingInfo build() {
-            return new OptionMappingInfo(this.mappingName, this.maxArgs, this.caseSensitive, this.options, this.optionGroups, this.optionNeeds);
+            return new OptionMappingInfo(this.mappingName, this.maxArgs, this.caseSensitive,this.desc, this.options, this.optionGroups, this.optionNeeds);
         }
     }
 
