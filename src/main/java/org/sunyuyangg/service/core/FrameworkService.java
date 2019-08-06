@@ -19,7 +19,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.sunyuyangg.service.core.method.HelpMessage;
-import org.sunyuyangg.service.core.support.DefaultHandlerClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +28,10 @@ import java.util.Optional;
 public abstract class FrameworkService implements STAFServiceInterfaceLevel30, EnvironmentCapable {
 
     private static final String APPLICATION_CONTEXT_ID_PREFIX = "FRAMEWORK_CONTEXT";
-    private String serviceName;
-    private STAFHandle handle;
+    protected String serviceName;
+    protected STAFHandle handle;
     public static String lineSep = "";
-    private String localMachineName = "";
+    protected String localMachineName = "";
 
     int serviceInvalidSerialNumber;
 
@@ -74,7 +73,6 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
         long elapsedTime = System.currentTimeMillis() - startTime;
         try {
             this.context = initApplicationContext();
-            registerBeans();
             initFrameworkService();
         }catch (Exception e) {
             Logger.error("Context initialization failed : {}", e);
@@ -84,14 +82,19 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
         Logger.info("FrameworkService '" + getServiceName() + "': initialization completed in " + elapsedTime + " ms");
     }
 
-    protected void registerBeans() {
-        registerBean( "handlerClient", new DefaultHandlerClient(this.handle, this.localMachineName));
-    }
-
-    private void registerBean(String beanName, Object bean) {
+    protected void registerBean(String beanName, Object bean) {
         ConfigurableApplicationContext configContext = (ConfigurableApplicationContext)this.context;
         SingletonBeanRegistry beanRegistry = configContext.getBeanFactory();
         beanRegistry.registerSingleton(beanName, bean);
+    }
+
+    public void setContextConfigLocation(@Nullable String contextConfigLocation) {
+        this.contextConfigLocation = contextConfigLocation;
+    }
+
+    @Nullable
+    public String getContextConfigLocation() {
+        return contextConfigLocation;
     }
 
     protected  void initFrameworkService(){

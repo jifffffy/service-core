@@ -34,6 +34,11 @@ public class ComputerSystemServiceTest {
     }
 
     @Test
+    public void handlerClientTest() {
+        assertTrue("Ok", ComputerSystemService.handlerClient != null);
+    }
+
+    @Test
     public void computerSystemTest() {
         RequestInfo requestInfo = createRequestInfo("query computerSystem");
         STAFResult result = computerSystemService.acceptRequest(requestInfo);
