@@ -2,6 +2,7 @@ package org.sunyuyangg.service.core.handler;
 
 import com.ibm.staf.STAFResult;
 import com.ibm.staf.service.STAFCommandParseResult;
+import org.pmw.tinylog.Logger;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 import org.sunyuyangg.service.core.adapter.ModelAndView;
@@ -36,11 +37,9 @@ public class ServiceInvocableHandlerMethod extends InvocableHandlerMethod {
 
     private Object invokeForRequest(STAFCommandParseResult parseResult) throws Exception{
         Object[] args = getMethodArgumentValues(parseResult);
-        logger.trace("Invoking '" + ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()) +
-                "' with arguments " + Arrays.toString(args));
+        Logger.info("Invoking {} with arguments {}", ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()), Arrays.toString(args));
         Object returnValue = doInvoke(args);
-        logger.trace("Method [" + ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()) +
-                "] returned [" + returnValue + "]");
+        Logger.info("Method [{}] returned [{}]", ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()), returnValue);
         return returnValue;
     }
 }
