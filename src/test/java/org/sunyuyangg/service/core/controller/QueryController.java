@@ -2,9 +2,7 @@ package org.sunyuyangg.service.core.controller;
 
 
 import com.ibm.staf.service.STAFCommandParser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.sunyuyangg.service.core.HandlerClient;
 import org.sunyuyangg.service.core.annotation.Option;
 import org.sunyuyangg.service.core.annotation.OptionMapping;
 import org.sunyuyangg.service.core.model.Cpu;

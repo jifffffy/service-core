@@ -1,7 +1,5 @@
-package org.sunyuyangg.service.core.support;
+package org.sunyuyangg.service.core.bean;
 
-import org.sunyuyangg.service.core.Session;
-import org.sunyuyangg.service.core.SessionManager;
 import org.sunyuyangg.service.core.exception.InvalidSessionIDException;
 
 import java.util.Vector;

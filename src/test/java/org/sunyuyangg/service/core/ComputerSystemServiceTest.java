@@ -33,10 +33,6 @@ public class ComputerSystemServiceTest {
         assertTrue("OK", result.rc == STAFResult.Ok);
     }
 
-    @Test
-    public void handlerClientTest() {
-        assertTrue("Ok", ComputerSystemService.handlerClient != null);
-    }
 
     @Test
     public void computerSystemTest() {

@@ -1,4 +1,4 @@
-package org.sunyuyangg.service.core.support;
+package org.sunyuyangg.service.core.bean;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ibm.staf.STAFHandle;
@@ -6,7 +6,6 @@ import com.ibm.staf.STAFResult;
 import com.ibm.staf.STAFUtil;
 import org.pmw.tinylog.Logger;
 import org.springframework.util.StringUtils;
-import org.sunyuyangg.service.core.HandlerClient;
 import org.sunyuyangg.service.core.Util;
 
 import java.util.List;
@@ -19,6 +18,17 @@ public class DefaultHandlerClient implements HandlerClient {
     private STAFHandle handle;
     private String localMachineName;
     private String timeOut = "";
+
+    public DefaultHandlerClient(String serviceName) throws Exception {
+        handle = new STAFHandle("STAF/Service/" + serviceName);
+
+        // Resolve the machine name variable for the local machine
+        STAFResult res = STAFUtil.resolveInitVar("{STAF/Config/Machine}", handle);
+        if (res.rc != STAFResult.Ok) {
+            throw new Exception("can not get machine");
+        }
+        localMachineName = res.result;
+    }
 
     public DefaultHandlerClient(STAFHandle handle, String localMachineName) {
         this.handle = handle;

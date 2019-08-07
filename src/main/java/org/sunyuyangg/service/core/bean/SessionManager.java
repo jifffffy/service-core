@@ -1,4 +1,4 @@
-package org.sunyuyangg.service.core;
+package org.sunyuyangg.service.core.bean;
 
 import org.sunyuyangg.service.core.exception.InvalidSessionIDException;
 

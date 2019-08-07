@@ -17,7 +17,6 @@ import org.springframework.util.StringUtils;
 import org.sunyuyangg.service.core.adapter.ModelAndView;
 import org.sunyuyangg.service.core.exception.NoHandlerFoundException;
 import org.sunyuyangg.service.core.handler.HandlerMethod;
-import org.sunyuyangg.service.core.support.DefaultHandlerClient;
 
 import java.io.IOException;
 import java.util.*;
@@ -38,8 +37,6 @@ public class DispatcherService extends FrameworkService {
 
     @Nullable
     private View view;
-
-    protected static HandlerClient handlerClient;
 
     private static final String DEFAULT_STRATEGIES_PATH = "/Dispatcher.properties";
 
@@ -90,12 +87,6 @@ public class DispatcherService extends FrameworkService {
 
     public DispatcherService(int serviceInvalidSerialNumber, String version, ApplicationContext applicationContext) {
         super(serviceInvalidSerialNumber, version, applicationContext);
-    }
-
-    @Override
-    protected void initFrameworkService() {
-        super.initFrameworkService();
-        this.handlerClient = new DefaultHandlerClient(this.handle, this.localMachineName);
     }
 
     @Override
