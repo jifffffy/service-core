@@ -44,6 +44,7 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
     /** Explicit context config location */
     @Nullable
     private String contextConfigLocation;
+    private Class<?> annotatedClass;
 
     private ApplicationContext context;
     public static final Class<?> DEFAULT_CONTEXT_CLASS = AnnotationConfigApplicationContext.class;
@@ -115,7 +116,7 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
         }
 
         if(applicationContext == null) {
-            // No context instance is defined for this servlet -> create a local one
+            // No context instance is defined for this service -> create a local one
             applicationContext = creatApplicationContext();
         }
 
@@ -190,12 +191,20 @@ public abstract class FrameworkService implements STAFServiceInterfaceLevel30, E
                             "': custom ApplicationContext class [" + contextClass.getName() +
                             "] is not of type ConfigurableApplicationContext");
         }
-        ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) BeanUtils.instantiateClass(contextClass);
+        AnnotationConfigApplicationContext annotationConfigApplicationContext = (AnnotationConfigApplicationContext) BeanUtils.instantiateClass(contextClass);
+        annotationConfigApplicationContext.register(getAnnotatedClass());
+        annotationConfigApplicationContext.setEnvironment(getEnvironment());
+        configureAndRefreshApplicationContext(annotationConfigApplicationContext);
 
-        configurableApplicationContext.setEnvironment(getEnvironment());
-        configureAndRefreshApplicationContext(configurableApplicationContext);
+        return annotationConfigApplicationContext;
+    }
 
-        return configurableApplicationContext;
+    public Class<?> getAnnotatedClass() {
+        return annotatedClass;
+    }
+
+    public void setAnnotatedClass(Class<?> annotatedClass) {
+        this.annotatedClass = annotatedClass;
     }
 
     /**
