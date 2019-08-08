@@ -72,19 +72,17 @@ public class DefaultHandlerClient implements HandlerClient {
         StringBuffer request = new StringBuffer();
         request.append(" QUEUE ");
         request.append(" TYPE ").append(type);
-        String result = "";
+        String result;
         try {
             if (object instanceof String) {
                 result = (String) object;
-            } else if (object instanceof List) {
-                List list = (List) object;
-                result = Util.objectMapper().writeValueAsString(Util.objectMapper().convertValue(object, List.class));
             } else {
-                result = Util.objectMapper().writeValueAsString(Util.objectMapper().convertValue(object, Map.class));
+                result = Util.objectMapper().writeValueAsString(object);
             }
 
         } catch (JsonProcessingException e) {
             Logger.error(e);
+            result = e.getMessage();
         }
         request.append(" MESSAGE ").append(STAFUtil.wrapData(result));
         return request.toString();
