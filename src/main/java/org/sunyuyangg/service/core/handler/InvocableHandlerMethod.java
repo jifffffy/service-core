@@ -7,6 +7,7 @@ import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
+import org.sunyuyangg.service.core.method.OptionMappingInfo;
 import org.sunyuyangg.service.core.support.HandlerMethodArgumentResolverComposite;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,8 +26,8 @@ public class InvocableHandlerMethod extends HandlerMethod {
 
     }
 
-    public InvocableHandlerMethod(Object bean, Method method) {
-        super(bean, method);
+    public InvocableHandlerMethod(ServiceRequest serviceRequest, Object bean, Method method) {
+        super(serviceRequest, bean, method);
     }
 
     public void setHandlerMethodArgumentResolvers(HandlerMethodArgumentResolverComposite argumentResolvers) {
@@ -34,21 +35,25 @@ public class InvocableHandlerMethod extends HandlerMethod {
     }
 
 
-    protected Object[] getMethodArgumentValues(STAFCommandParseResult parseResult) throws Exception {
+    protected Object[] getMethodArgumentValues(ServiceRequest serviceRequest) throws Exception {
         MethodParameter[] parameters = getMethodParameters();
         Object[] args = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             MethodParameter parameter = parameters[i];
             parameter.initParameterNameDiscovery(this.parameterNameDiscoverer);
-            args[i] = resolveProvidedArgument(parameter, parseResult);
+            args[i] = resolveProvidedArgument(parameter, serviceRequest.getParseResult());
             if (args[i] != null) {
                 continue;
             }
 
-            if (this.argumentResolvers.supportsParameter(parameter, parseResult)) {
+            if(isNullable(parameter, serviceRequest.getMapping())){
+                continue;
+            }
+
+            if (this.argumentResolvers.supportsParameter(parameter, serviceRequest.getParseResult())) {
                 try {
                     args[i] = this.argumentResolvers.resolveArgument(
-                            parameter, parseResult);
+                            parameter, serviceRequest.getParseResult());
                     continue;
                 }
                 catch (Exception ex) {
@@ -66,6 +71,18 @@ public class InvocableHandlerMethod extends HandlerMethod {
             }
         }
         return args;
+    }
+
+    private boolean isNullable(MethodParameter parameter, Object mapping) {
+
+        if(mapping instanceof OptionMappingInfo) {
+            OptionMappingInfo optionMappingInfo = (OptionMappingInfo) mapping;
+            return optionMappingInfo.getOptions().stream()
+                    .filter(option -> option.name.equalsIgnoreCase(parameter.getParameterName()))
+                    .anyMatch(option -> option.minAllowed == 0 && option.maxAllowed != 0);
+        }
+
+        return false;
     }
 
     private static String formatArgumentError(MethodParameter param, String message) {

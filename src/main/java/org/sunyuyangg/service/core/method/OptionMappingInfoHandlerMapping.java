@@ -3,6 +3,10 @@ package org.sunyuyangg.service.core.method;
 import com.ibm.staf.service.STAFServiceInterfaceLevel30;
 import org.sunyuyangg.service.core.FrameworkService;
 import org.sunyuyangg.service.core.handler.AbstractHandlerMethodMapping;
+import org.sunyuyangg.service.core.handler.HandlerMethod;
+import org.sunyuyangg.service.core.handler.ServiceRequest;
+
+import java.lang.reflect.Method;
 
 
 public abstract class OptionMappingInfoHandlerMapping extends AbstractHandlerMethodMapping<OptionMappingInfo> {
@@ -21,9 +25,17 @@ public abstract class OptionMappingInfoHandlerMapping extends AbstractHandlerMet
 		return mapping.getMappingPath();
 	}
 
-	@Override
-	protected void processHandlerMethod(AbstractHandlerMethodMapping<OptionMappingInfo>.Match match) {
-		match.handlerMethod.setParseResult(match.mapping.getParseResult());
+
+	protected HandlerMethod createHandlerMethod(OptionMappingInfo mapping, Object handler, Method method) {
+		HandlerMethod handlerMethod;
+		ServiceRequest serviceRequest = new OptionMappingServiceRequest(mapping);
+		if (handler instanceof String) {
+			String beanName = (String) handler;
+			handlerMethod = new HandlerMethod(serviceRequest, beanName, obtainApplicationContext().getAutowireCapableBeanFactory(), method);
+		} else {
+			handlerMethod = new HandlerMethod(serviceRequest, handler, method);
+		}
+		return handlerMethod;
 	}
 
 	@Override

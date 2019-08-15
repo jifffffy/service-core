@@ -33,6 +33,8 @@ public class HandlerMethod {
 
     private final Method method;
 
+    private final ServiceRequest serviceRequest;
+
     private final Method bridgedMethod;
 
     private final MethodParameter[] parameters;
@@ -46,17 +48,17 @@ public class HandlerMethod {
     @Nullable
     private HandlerMethod resolvedFromHandlerMethod;
 
-    private  STAFCommandParseResult parseResult;
 
 
     /**
      * Create an instance from a bean instance and a method.
      */
-    public HandlerMethod(Object bean, Method method) {
+    public HandlerMethod(ServiceRequest serviceRequest, Object bean, Method method) {
         Assert.notNull(bean, "Bean is required");
         Assert.notNull(method, "Method is required");
         this.bean = bean;
         this.beanFactory = null;
+        this.serviceRequest = serviceRequest;
         this.beanType = ClassUtils.getUserClass(bean);
         this.method = method;
         this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
@@ -69,11 +71,12 @@ public class HandlerMethod {
      *
      * @throws NoSuchMethodException when the method cannot be found
      */
-    public HandlerMethod(Object bean, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
+    public HandlerMethod(ServiceRequest serviceRequest, Object bean, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
         Assert.notNull(bean, "Bean is required");
         Assert.notNull(methodName, "Method name is required");
         this.bean = bean;
         this.beanFactory = null;
+        this.serviceRequest = serviceRequest;
         this.beanType = ClassUtils.getUserClass(bean);
         this.method = bean.getClass().getMethod(methodName, parameterTypes);
         this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(this.method);
@@ -86,12 +89,13 @@ public class HandlerMethod {
      * The method {@link #createWithResolvedBean()} may be used later to
      * re-create the {@code HandlerMethod} with an initialized bean.
      */
-    public HandlerMethod(String beanName, BeanFactory beanFactory, Method method) {
+    public HandlerMethod(ServiceRequest serviceRequest, String beanName, BeanFactory beanFactory, Method method) {
         Assert.hasText(beanName, "Bean name is required");
         Assert.notNull(beanFactory, "BeanFactory is required");
         Assert.notNull(method, "Method is required");
         this.bean = beanName;
         this.beanFactory = beanFactory;
+        this.serviceRequest = serviceRequest;
         Class<?> beanType = beanFactory.getType(beanName);
         if (beanType == null) {
             throw new IllegalStateException("Cannot resolve bean type for bean with name '" + beanName + "'");
@@ -109,7 +113,7 @@ public class HandlerMethod {
     protected HandlerMethod(HandlerMethod handlerMethod) {
         Assert.notNull(handlerMethod, "HandlerMethod is required");
         this.bean = handlerMethod.bean;
-        this.parseResult = handlerMethod.parseResult;
+        this.serviceRequest = handlerMethod.serviceRequest;
         this.beanFactory = handlerMethod.beanFactory;
         this.beanType = handlerMethod.beanType;
         this.method = handlerMethod.method;
@@ -127,7 +131,7 @@ public class HandlerMethod {
         Assert.notNull(handlerMethod, "HandlerMethod is required");
         Assert.notNull(handler, "Handler object is required");
         this.bean = handler;
-        this.parseResult = handlerMethod.parseResult;
+        this.serviceRequest = handlerMethod.serviceRequest;
         this.beanFactory = handlerMethod.beanFactory;
         this.beanType = handlerMethod.beanType;
         this.method = handlerMethod.method;
@@ -153,14 +157,9 @@ public class HandlerMethod {
     private void evaluateResponseStatus() {
     }
 
-    public void setParseResult(STAFCommandParseResult parseResult) {
-        this.parseResult = parseResult;
+    public ServiceRequest getServiceRequest() {
+        return serviceRequest;
     }
-
-    public STAFCommandParseResult getPocessedRequest() {
-        return parseResult;
-    }
-
 
     /**
      * Return the bean for this handler method.

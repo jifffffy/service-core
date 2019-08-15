@@ -11,6 +11,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.lang.Nullable;
 import org.sunyuyangg.service.core.handler.HandlerMethod;
 import org.sunyuyangg.service.core.handler.ServiceInvocableHandlerMethod;
+import org.sunyuyangg.service.core.handler.ServiceRequest;
 import org.sunyuyangg.service.core.support.HandlerMethodArgumentResolver;
 import org.sunyuyangg.service.core.support.HandlerMethodArgumentResolverComposite;
 import org.sunyuyangg.service.core.support.JsonHandlerMethodArgumentResolver;
@@ -83,13 +84,13 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 
     @Override
-    protected ModelAndView handleInternal(STAFCommandParseResult request, STAFResult response, HandlerMethod handlerMethod) throws Exception {
+    protected ModelAndView handleInternal(ServiceRequest request, STAFResult response, HandlerMethod handlerMethod) throws Exception {
         ModelAndView mav;
         mav = invokeHandlerMethod(request, response, handlerMethod);
         return mav;
     }
 
-    private ModelAndView invokeHandlerMethod(STAFCommandParseResult request, STAFResult response, HandlerMethod handlerMethod) throws Exception {
+    private ModelAndView invokeHandlerMethod(ServiceRequest request, STAFResult response, HandlerMethod handlerMethod) throws Exception {
 
         ServiceInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
         if (this.argumentResolvers != null) {

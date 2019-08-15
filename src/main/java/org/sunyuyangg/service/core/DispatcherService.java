@@ -256,7 +256,7 @@ public class DispatcherService extends FrameworkService {
         // Determine handler adapter for the current request.
         HandlerAdapter handlerAdapter = getHandlerAdapter(mappedHandler);
         // Actually invoke the handler.
-        ModelAndView model = handlerAdapter.handle(mappedHandler.getPocessedRequest(), response, mappedHandler);
+        ModelAndView model = handlerAdapter.handle(mappedHandler.getServiceRequest(), response, mappedHandler);
         this.view.render(model, response);
     }
 

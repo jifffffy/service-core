@@ -12,8 +12,8 @@ import java.util.Arrays;
 
 public class ServiceInvocableHandlerMethod extends InvocableHandlerMethod {
 
-    public ServiceInvocableHandlerMethod(Object bean, Method method) {
-        super(bean, method);
+    public ServiceInvocableHandlerMethod(ServiceRequest serviceRequest, Object bean, Method method) {
+        super(serviceRequest, bean, method);
     }
 
     public ServiceInvocableHandlerMethod(HandlerMethod handlerMethod) {
@@ -29,13 +29,13 @@ public class ServiceInvocableHandlerMethod extends InvocableHandlerMethod {
         return getDetailedErrorMessage(sb.toString());
     }
 
-    public void invokeAndHandle(STAFCommandParseResult request, ModelAndView modelAndView) throws Exception{
+    public void invokeAndHandle(ServiceRequest request, ModelAndView modelAndView) throws Exception{
         Object returnValue = invokeForRequest(request);
         modelAndView.setModel(returnValue);
         modelAndView.setRc(STAFResult.Ok);
     }
 
-    private Object invokeForRequest(STAFCommandParseResult parseResult) throws Exception{
+    private Object invokeForRequest(ServiceRequest parseResult) throws Exception{
         Object[] args = getMethodArgumentValues(parseResult);
         Logger.info("Invoking {} with arguments {}", ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()), Arrays.toString(args));
         Object returnValue = doInvoke(args);

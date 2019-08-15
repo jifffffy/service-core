@@ -8,6 +8,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.lang.Nullable;
 import org.springframework.util.*;
+import org.sunyuyangg.service.core.method.OptionMappingInfo;
+import org.sunyuyangg.service.core.method.OptionMappingServiceRequest;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -151,14 +153,12 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
                         "Ambiguous handler methods mapped for '" + path + "': {" + m1 + ", " + m2 + "}");
             }
 
-            processHandlerMethod(bestMatch);
             return bestMatch.handlerMethod;
         } else {
             return handleNoMatch(this.mappingRegistry.getMappings().keySet(), request);
         }
     }
 
-    protected abstract void processHandlerMethod(Match match);
 
     private HandlerMethod handleNoMatch(Set<T> keySet, STAFServiceInterfaceLevel30.RequestInfo request) throws Exception {
         return null;
@@ -216,16 +216,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
      * @param method  the target method
      * @return the created HandlerMethod
      */
-    protected HandlerMethod createHandlerMethod(Object handler, Method method) {
-        HandlerMethod handlerMethod;
-        if (handler instanceof String) {
-            String beanName = (String) handler;
-            handlerMethod = new HandlerMethod(beanName, obtainApplicationContext().getAutowireCapableBeanFactory(), method);
-        } else {
-            handlerMethod = new HandlerMethod(handler, method);
-        }
-        return handlerMethod;
-    }
+    protected abstract HandlerMethod createHandlerMethod(T mapping, Object handler, Method method) ;
 
     public void setHandlerMethodMappingNamingStrategy(HandlerMethodMappingNamingStrategy<T> namingStrategy) {
         this.namingStrategy = namingStrategy;
@@ -305,7 +296,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         public void register(T mapping, Object handler, Method method) {
             this.readWriteLock.writeLock().lock();
             try {
-                HandlerMethod handlerMethod = createHandlerMethod(handler, method);
+                HandlerMethod handlerMethod = createHandlerMethod(mapping, handler, method);
                 assertUniqueMethodMapping(handlerMethod, mapping);
 
                 this.mappingLookup.put(mapping, handlerMethod);
