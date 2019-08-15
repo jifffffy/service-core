@@ -38,7 +38,7 @@ public class QueryController {
 
     @OptionMapping(
             options = {
-                    @Option(name = "ComputerSystem", maxAllowed = 1, valueRequirement = STAFCommandParser.VALUENOTALLOWED)
+                    @Option(name = "ComputerSystem", maxAllowed = 1, minAllowed = 1, valueRequirement = STAFCommandParser.VALUENOTALLOWED)
             },
             optionNeeds = {},
             optionGroup = {}

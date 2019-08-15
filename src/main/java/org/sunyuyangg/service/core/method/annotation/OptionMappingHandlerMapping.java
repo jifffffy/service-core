@@ -1,10 +1,8 @@
 package org.sunyuyangg.service.core.method.annotation;
 
-
 import com.ibm.staf.service.STAFCommandParser;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Controller;
-import org.sunyuyangg.service.core.FrameworkService;
 import org.sunyuyangg.service.core.annotation.OptionMapping;
 import org.sunyuyangg.service.core.method.OptionMappingInfo;
 import org.sunyuyangg.service.core.method.OptionMappingInfoHandlerMapping;
@@ -32,9 +30,9 @@ public class OptionMappingHandlerMapping extends OptionMappingInfoHandlerMapping
         if(name.contains("CONTROLLER")) {
             name = name.substring(0, name.indexOf("CONTROLLER"));
         }
-        builder.option(name, 1, STAFCommandParser.VALUENOTALLOWED);
+        builder.option(name, 1,1, STAFCommandParser.VALUENOTALLOWED);
         builder.desc(optionMapping.desc());
-        Arrays.asList(optionMapping.options()).forEach(option -> builder.option(option.name(), option.maxAllowed(), option.valueRequirement()));
+        Arrays.asList(optionMapping.options()).forEach(option -> builder.option(option.name(), option.maxAllowed(),option.minAllowed(), option.valueRequirement()));
         Arrays.asList(optionMapping.optionGroup()).forEach(optionGroup -> builder.optionGroup(optionGroup.names(), optionGroup.min(), optionGroup.max()));
         Arrays.asList(optionMapping.optionNeeds()).forEach(optionNeeds -> builder.optionNeed(optionNeeds.needers(), optionNeeds.needees()));
         return builder.build();

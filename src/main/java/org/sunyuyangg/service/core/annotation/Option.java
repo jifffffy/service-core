@@ -11,6 +11,7 @@ public @interface Option {
     String name() default "";
 
     int maxAllowed() default 0;
+    int minAllowed() default 0;
 
     int valueRequirement() default 0;
 }

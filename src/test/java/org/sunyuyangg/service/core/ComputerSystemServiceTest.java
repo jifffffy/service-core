@@ -1,6 +1,8 @@
 package org.sunyuyangg.service.core;
 
+import com.ibm.staf.STAFMarshallingContext;
 import com.ibm.staf.STAFResult;
+import com.ibm.staf.STAFUtil;
 import com.ibm.staf.service.STAFServiceInterfaceLevel30.InitInfo;
 import com.ibm.staf.service.STAFServiceInterfaceLevel30.RequestInfo;
 import org.junit.Before;
@@ -29,7 +31,7 @@ public class ComputerSystemServiceTest {
     public void helpTest() {
         RequestInfo requestInfo = createRequestInfo("help");
         STAFResult result = computerSystemService.acceptRequest(requestInfo);
-        Logger.info("result: rc = {}, message={}", result.rc, result.result);
+        Logger.info("result: rc = {}, message={}", result.rc, STAFMarshallingContext.unmarshall(result.result).getRootObject());
         assertTrue("OK", result.rc == STAFResult.Ok);
     }
 

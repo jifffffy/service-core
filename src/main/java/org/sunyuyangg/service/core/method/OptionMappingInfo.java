@@ -92,7 +92,7 @@ public class OptionMappingInfo {
          * @return
          */
         Builder name(String name);
-        Builder option(String name, int maxAllowed, int valueRequirement);
+        Builder option(String name, int maxAllowed,int minAllowed, int valueRequirement);
         Builder optionGroup(String names, int min, int max);
         Builder optionNeed(String needers, String needees);
         Builder desc(String desc);
@@ -124,8 +124,8 @@ public class OptionMappingInfo {
         }
 
         @Override
-        public Builder option(String name, int maxAllowed, int valueRequirement) {
-            this.options.add( new Option(name, maxAllowed, valueRequirement));
+        public Builder option(String name, int maxAllowed,int minAllowed, int valueRequirement) {
+            this.options.add( new Option(name, maxAllowed,minAllowed, valueRequirement));
             return this;
         }
 
@@ -157,11 +157,13 @@ public class OptionMappingInfo {
     public static class Option {
         public String name;
         public int maxAllowed;
+        public int minAllowed;
         public int valueRequirement;
 
-        public Option(String name, int maxAllowed, int valueRequirement) {
+        public Option(String name, int maxAllowed, int minAllowed,int valueRequirement) {
             this.name = name;
             this.maxAllowed = maxAllowed;
+            this.minAllowed = minAllowed;
             this.valueRequirement = valueRequirement;
         }
     }

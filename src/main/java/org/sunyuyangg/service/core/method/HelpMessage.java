@@ -28,18 +28,35 @@ public class HelpMessage {
     private void addOption(List<OptionMappingInfo.Option> options, List<String> list) {
         for (int i = 1; i < options.size(); i++) {
             OptionMappingInfo.Option option = options.get(i);
-            list.add(option.name.toUpperCase());
-            switch (option.valueRequirement) {
-                case STAFCommandParser.VALUEREQUIRED:
-                    list.add("<" + option.name.toLowerCase() + ">");
+            switch (option.maxAllowed) {
+                case 0:
+                    list.add(option.name.toUpperCase() + "* " + handleOptionValue(option));
                     break;
-                case STAFCommandParser.VALUEALLOWED:
-                    list.add("[" + option.name.toLowerCase() + "]");
-                    break;
-                case STAFCommandParser.VALUENOTALLOWED:
-                    break;
+                default:
+                    switch (option.minAllowed) {
+                        case 0:
+                            list.add("[" + option.name.toUpperCase() + handleOptionValue(option) + "]");
+                            break;
+                        default:
+                            list.add("<" + option.name.toUpperCase() + handleOptionValue(option) + ">");
+                    }
             }
         }
+    }
+
+    private String handleOptionValue(OptionMappingInfo.Option option) {
+        String value = "";
+        switch (option.valueRequirement) {
+            case STAFCommandParser.VALUEREQUIRED:
+                value = "<" + option.name.toLowerCase() + ">";
+                break;
+            case STAFCommandParser.VALUEALLOWED:
+                value = "[" + option.name.toLowerCase() + "]";
+                break;
+            case STAFCommandParser.VALUENOTALLOWED:
+                break;
+        }
+        return value;
     }
 
     public String getCommand() {
