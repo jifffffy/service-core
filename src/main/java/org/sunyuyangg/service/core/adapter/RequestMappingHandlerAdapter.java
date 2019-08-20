@@ -12,10 +12,7 @@ import org.springframework.lang.Nullable;
 import org.sunyuyangg.service.core.handler.HandlerMethod;
 import org.sunyuyangg.service.core.handler.ServiceInvocableHandlerMethod;
 import org.sunyuyangg.service.core.handler.ServiceRequest;
-import org.sunyuyangg.service.core.support.HandlerMethodArgumentResolver;
-import org.sunyuyangg.service.core.support.HandlerMethodArgumentResolverComposite;
-import org.sunyuyangg.service.core.support.JsonHandlerMethodArgumentResolver;
-import org.sunyuyangg.service.core.support.PrimaryHandlerMethodArgumentResolver;
+import org.sunyuyangg.service.core.support.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +59,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
     private List<HandlerMethodArgumentResolver> getDefaultArgumentResolvers() {
         List<HandlerMethodArgumentResolver> resolvers = new ArrayList<>();
         resolvers.add(new PrimaryHandlerMethodArgumentResolver());
+        resolvers.add(new StringHandlerMethodArgumentResolver());
+        resolvers.add(new OptionTimesHandlerMethodArgumentResolver());
         resolvers.add(new JsonHandlerMethodArgumentResolver());
         // Custom arguments
         if (getCustomArgumentResolvers() != null) {

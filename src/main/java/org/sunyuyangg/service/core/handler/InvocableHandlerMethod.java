@@ -7,6 +7,7 @@ import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
+import org.sunyuyangg.service.core.method.MappingInfo;
 import org.sunyuyangg.service.core.method.OptionMappingInfo;
 import org.sunyuyangg.service.core.support.HandlerMethodArgumentResolverComposite;
 
@@ -41,22 +42,13 @@ public class InvocableHandlerMethod extends HandlerMethod {
         for (int i = 0; i < parameters.length; i++) {
             MethodParameter parameter = parameters[i];
             parameter.initParameterNameDiscovery(this.parameterNameDiscoverer);
-            args[i] = resolveProvidedArgument(parameter, serviceRequest.getParseResult());
-            if (args[i] != null) {
-                continue;
-            }
-
-            if(isNullable(parameter, serviceRequest.getMapping())){
-                continue;
-            }
 
             if (this.argumentResolvers.supportsParameter(parameter, serviceRequest.getParseResult())) {
                 try {
                     args[i] = this.argumentResolvers.resolveArgument(
                             parameter, serviceRequest.getParseResult());
                     continue;
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     // Leave stack trace for later, e.g. AbstractHandlerExceptionResolver
                     String message = ex.getMessage();
                     if (!message.contains(parameter.getExecutable().toGenericString())) {
@@ -66,6 +58,10 @@ public class InvocableHandlerMethod extends HandlerMethod {
                 }
             }
 
+            if (isNullable(parameter, serviceRequest.getMapping())) {
+                continue;
+            }
+
             if (args[i] == null) {
                 throw new IllegalStateException(formatArgumentError(parameter, "No suitable resolver"));
             }
@@ -73,16 +69,9 @@ public class InvocableHandlerMethod extends HandlerMethod {
         return args;
     }
 
-    private boolean isNullable(MethodParameter parameter, Object mapping) {
+    private boolean isNullable(MethodParameter parameter, MappingInfo mapping) {
 
-        if(mapping instanceof OptionMappingInfo) {
-            OptionMappingInfo optionMappingInfo = (OptionMappingInfo) mapping;
-            return optionMappingInfo.getOptions().stream()
-                    .filter(option -> option.name.equalsIgnoreCase(parameter.getParameterName()))
-                    .anyMatch(option -> option.minAllowed == 0 && option.maxAllowed != 0);
-        }
-
-        return false;
+        return mapping.isNullable(parameter.getParameterName());
     }
 
     private static String formatArgumentError(MethodParameter param, String message) {
@@ -90,31 +79,6 @@ public class InvocableHandlerMethod extends HandlerMethod {
                 param.getExecutable().toGenericString() + (StringUtils.hasText(message) ? ": " + message : "");
     }
 
-    /**
-     * Attempt to resolve a method parameter from the list of provided argument values.
-     */
-    @Nullable
-    private Object resolveProvidedArgument(MethodParameter parameter, STAFCommandParseResult parseResult) throws Exception {
-        if (parseResult == null) {
-            return null;
-        }
-
-        if (parseResult.optionTimes(parameter.getParameterName()) > 1) {
-            throw new Exception(formatArgumentError(parameter, "option must only one"));
-        }
-
-        String providedArg = parseResult.optionValue(parameter.getParameterName());
-
-        if(providedArg == null) {
-            throw new Exception(formatArgumentError(parameter, "can not get option value"));
-        }
-
-        if (parameter.getParameterType() == String.class) {
-            return providedArg;
-        }
-
-        return null;
-    }
 
     /**
      * Invoke the handler method with the given argument values.

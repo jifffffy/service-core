@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class OptionMappingInfo {
+public class OptionMappingInfo implements MappingInfo{
 
     @Nullable
     private final String name;
@@ -83,6 +83,13 @@ public class OptionMappingInfo {
             return null;
         }
         return new OptionMappingInfo(this, parseResult);
+    }
+
+    @Override
+    public boolean isNullable(String optionName) {
+        return getOptions().stream()
+                .filter(option -> option.name.equalsIgnoreCase(optionName))
+                .anyMatch(option -> option.minAllowed == 0 && option.maxAllowed != 0);
     }
 
     public interface Builder {

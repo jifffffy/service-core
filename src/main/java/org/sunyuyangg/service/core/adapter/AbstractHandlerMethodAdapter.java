@@ -2,7 +2,6 @@ package org.sunyuyangg.service.core.adapter;
 
 
 import com.ibm.staf.STAFResult;
-import com.ibm.staf.service.STAFCommandParseResult;
 import org.sunyuyangg.service.core.HandlerAdapter;
 import org.sunyuyangg.service.core.handler.HandlerMethod;
 import org.sunyuyangg.service.core.handler.ServiceRequest;
