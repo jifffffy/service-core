@@ -30,7 +30,7 @@ public class HelpMessage {
             OptionMappingInfo.Option option = options.get(i);
             switch (option.maxAllowed) {
                 case 0:
-                    list.add(option.name.toUpperCase() + "* " + handleOptionValue(option));
+                    list.add("[" + option.name.toUpperCase() + "* " + handleOptionValue(option) + "]");
                     break;
                 default:
                     switch (option.minAllowed) {
@@ -43,6 +43,7 @@ public class HelpMessage {
             }
         }
     }
+
 
     private String handleOptionValue(OptionMappingInfo.Option option) {
         String value = "";
