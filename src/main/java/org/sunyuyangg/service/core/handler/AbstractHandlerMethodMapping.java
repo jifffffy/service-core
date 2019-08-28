@@ -152,7 +152,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
                 throw new IllegalStateException(
                         "Ambiguous handler methods mapped for '" + path + "': {" + m1 + ", " + m2 + "}");
             }
-
+            // todo
+            ServiceRequest serviceRequest = new OptionMappingServiceRequest((OptionMappingInfo) bestMatch.mapping);
+            bestMatch.handlerMethod.setServiceRequest(serviceRequest);
             return bestMatch.handlerMethod;
         } else {
             return handleNoMatch(this.mappingRegistry.getMappings().keySet(), request);
@@ -164,7 +166,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         return null;
     }
 
-    private void addMatchingMappings(Collection<T> mappings, List<Match> matches, STAFServiceInterfaceLevel30.RequestInfo request) {
+    private void addMatchingMappings(Collection<T> mappings, List<Match> matches, STAFServiceInterfaceLevel30.RequestInfo request) throws Exception {
         for (T mapping : mappings) {
             T match = getMatchingMapping(mapping, request);
             if (match != null) {
@@ -173,7 +175,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         }
     }
 
-    protected abstract T getMatchingMapping(T mapping, STAFServiceInterfaceLevel30.RequestInfo request);
+    protected abstract T getMatchingMapping(T mapping, STAFServiceInterfaceLevel30.RequestInfo request) throws Exception;
 
 
     protected void registerHandlerMethod(Object handler, Method method, T mapping) {

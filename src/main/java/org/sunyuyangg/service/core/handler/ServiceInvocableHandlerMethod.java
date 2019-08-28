@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class ServiceInvocableHandlerMethod extends InvocableHandlerMethod {
 
     public ServiceInvocableHandlerMethod(ServiceRequest serviceRequest, Object bean, Method method) {
-        super(serviceRequest, bean, method);
+        super(bean, method);
     }
 
     public ServiceInvocableHandlerMethod(HandlerMethod handlerMethod) {

@@ -4,7 +4,6 @@ import com.ibm.staf.service.STAFServiceInterfaceLevel30;
 import org.sunyuyangg.service.core.FrameworkService;
 import org.sunyuyangg.service.core.handler.AbstractHandlerMethodMapping;
 import org.sunyuyangg.service.core.handler.HandlerMethod;
-import org.sunyuyangg.service.core.handler.ServiceRequest;
 
 import java.lang.reflect.Method;
 
@@ -16,7 +15,7 @@ public abstract class OptionMappingInfoHandlerMapping extends AbstractHandlerMet
 	}
 
 	@Override
-	protected OptionMappingInfo getMatchingMapping(OptionMappingInfo mapping, STAFServiceInterfaceLevel30.RequestInfo request) {
+	protected OptionMappingInfo getMatchingMapping(OptionMappingInfo mapping, STAFServiceInterfaceLevel30.RequestInfo request) throws Exception {
 		return mapping.getMatching(request);
 	}
 
@@ -28,12 +27,12 @@ public abstract class OptionMappingInfoHandlerMapping extends AbstractHandlerMet
 
 	protected HandlerMethod createHandlerMethod(OptionMappingInfo mapping, Object handler, Method method) {
 		HandlerMethod handlerMethod;
-		ServiceRequest serviceRequest = new OptionMappingServiceRequest(mapping);
+
 		if (handler instanceof String) {
 			String beanName = (String) handler;
-			handlerMethod = new HandlerMethod(serviceRequest, beanName, obtainApplicationContext().getAutowireCapableBeanFactory(), method);
+			handlerMethod = new HandlerMethod(beanName, obtainApplicationContext().getAutowireCapableBeanFactory(), method);
 		} else {
-			handlerMethod = new HandlerMethod(serviceRequest, handler, method);
+			handlerMethod = new HandlerMethod(handler, method);
 		}
 		return handlerMethod;
 	}

@@ -1,14 +1,12 @@
 package org.sunyuyangg.service.core.handler;
 
-import com.ibm.staf.service.STAFCommandParseResult;
+import org.pmw.tinylog.Logger;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.lang.Nullable;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 import org.sunyuyangg.service.core.method.MappingInfo;
-import org.sunyuyangg.service.core.method.OptionMappingInfo;
 import org.sunyuyangg.service.core.support.HandlerMethodArgumentResolverComposite;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,8 +25,8 @@ public class InvocableHandlerMethod extends HandlerMethod {
 
     }
 
-    public InvocableHandlerMethod(ServiceRequest serviceRequest, Object bean, Method method) {
-        super(serviceRequest, bean, method);
+    public InvocableHandlerMethod(Object bean, Method method) {
+        super(bean, method);
     }
 
     public void setHandlerMethodArgumentResolvers(HandlerMethodArgumentResolverComposite argumentResolvers) {
@@ -45,11 +43,11 @@ public class InvocableHandlerMethod extends HandlerMethod {
 
             if (this.argumentResolvers.supportsParameter(parameter, serviceRequest.getParseResult())) {
                 try {
-                    args[i] = this.argumentResolvers.resolveArgument(
-                            parameter, serviceRequest.getParseResult());
+                    args[i] = this.argumentResolvers.resolveArgument(parameter, serviceRequest.getParseResult());
                     continue;
                 } catch (Exception ex) {
                     // Leave stack trace for later, e.g. AbstractHandlerExceptionResolver
+                    Logger.error(ex);
                     String message = ex.getMessage();
                     if (!message.contains(parameter.getExecutable().toGenericString())) {
                         logger.debug(formatArgumentError(parameter, message));

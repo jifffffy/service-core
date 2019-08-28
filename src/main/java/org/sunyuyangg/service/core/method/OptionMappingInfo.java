@@ -77,10 +77,10 @@ public class OptionMappingInfo implements MappingInfo{
         return new DefaultBuilder(maxArgs, caseSensitive);
     }
 
-    public OptionMappingInfo getMatching(STAFServiceInterfaceLevel30.RequestInfo request) {
+    public OptionMappingInfo getMatching(STAFServiceInterfaceLevel30.RequestInfo request) throws Exception{
         STAFCommandParseResult parseResult = this.commandParser.parse(request.request);
         if(parseResult.rc != STAFResult.Ok) {
-            return null;
+            throw new Exception(parseResult.errorBuffer);
         }
         return new OptionMappingInfo(this, parseResult);
     }

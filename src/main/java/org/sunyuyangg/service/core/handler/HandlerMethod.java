@@ -33,7 +33,7 @@ public class HandlerMethod {
 
     private final Method method;
 
-    private final ServiceRequest serviceRequest;
+    private ServiceRequest serviceRequest;
 
     private final Method bridgedMethod;
 
@@ -53,12 +53,11 @@ public class HandlerMethod {
     /**
      * Create an instance from a bean instance and a method.
      */
-    public HandlerMethod(ServiceRequest serviceRequest, Object bean, Method method) {
+    public HandlerMethod( Object bean, Method method) {
         Assert.notNull(bean, "Bean is required");
         Assert.notNull(method, "Method is required");
         this.bean = bean;
         this.beanFactory = null;
-        this.serviceRequest = serviceRequest;
         this.beanType = ClassUtils.getUserClass(bean);
         this.method = method;
         this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
@@ -71,12 +70,11 @@ public class HandlerMethod {
      *
      * @throws NoSuchMethodException when the method cannot be found
      */
-    public HandlerMethod(ServiceRequest serviceRequest, Object bean, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
+    public HandlerMethod(Object bean, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
         Assert.notNull(bean, "Bean is required");
         Assert.notNull(methodName, "Method name is required");
         this.bean = bean;
         this.beanFactory = null;
-        this.serviceRequest = serviceRequest;
         this.beanType = ClassUtils.getUserClass(bean);
         this.method = bean.getClass().getMethod(methodName, parameterTypes);
         this.bridgedMethod = BridgeMethodResolver.findBridgedMethod(this.method);
@@ -89,13 +87,12 @@ public class HandlerMethod {
      * The method {@link #createWithResolvedBean()} may be used later to
      * re-create the {@code HandlerMethod} with an initialized bean.
      */
-    public HandlerMethod(ServiceRequest serviceRequest, String beanName, BeanFactory beanFactory, Method method) {
+    public HandlerMethod( String beanName, BeanFactory beanFactory, Method method) {
         Assert.hasText(beanName, "Bean name is required");
         Assert.notNull(beanFactory, "BeanFactory is required");
         Assert.notNull(method, "Method is required");
         this.bean = beanName;
         this.beanFactory = beanFactory;
-        this.serviceRequest = serviceRequest;
         Class<?> beanType = beanFactory.getType(beanName);
         if (beanType == null) {
             throw new IllegalStateException("Cannot resolve bean type for bean with name '" + beanName + "'");
@@ -159,6 +156,10 @@ public class HandlerMethod {
 
     public ServiceRequest getServiceRequest() {
         return serviceRequest;
+    }
+
+    public void setServiceRequest(ServiceRequest serviceRequest) {
+        this.serviceRequest = serviceRequest;
     }
 
     /**

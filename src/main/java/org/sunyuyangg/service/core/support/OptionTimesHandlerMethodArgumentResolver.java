@@ -9,7 +9,7 @@ import java.util.List;
 public class OptionTimesHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter, STAFCommandParseResult parseResult) {
-        return parseResult.optionTimes(parameter.getParameterName()) > 1;
+        return parameter.getParameterType().getSimpleName().equalsIgnoreCase(List.class.getSimpleName());
     }
 
     @Override
