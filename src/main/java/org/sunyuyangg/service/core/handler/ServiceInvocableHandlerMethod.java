@@ -38,7 +38,7 @@ public class ServiceInvocableHandlerMethod extends InvocableHandlerMethod {
         Object[] args = getMethodArgumentValues(parseResult);
         Logger.info("Invoking {} with arguments {}", ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()), Arrays.toString(args));
         Object returnValue = doInvoke(args);
-        Logger.info("Method [{}] returned [{}]", ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()), returnValue);
+        Logger.info("Method : {} , returned : {}", ClassUtils.getQualifiedMethodName(getMethod(), getBeanType()), returnValue);
         return returnValue;
     }
 }

@@ -1,5 +1,7 @@
 package org.sunyuyangg.service.core;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -10,6 +12,8 @@ public class Util {
 
     public static ObjectMapper objectMapper() {
         if(objectMapper == null) {
+            JsonFactory jsonFactory = new JsonFactory();
+            jsonFactory.enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES);
             objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
