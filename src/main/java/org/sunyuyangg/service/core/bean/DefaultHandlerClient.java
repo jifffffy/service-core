@@ -1,6 +1,7 @@
 package org.sunyuyangg.service.core.bean;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ibm.staf.STAFException;
 import com.ibm.staf.STAFHandle;
 import com.ibm.staf.STAFResult;
 import com.ibm.staf.STAFUtil;
@@ -18,14 +19,12 @@ public class DefaultHandlerClient implements HandlerClient {
     private String timeOut = "";
 
     public DefaultHandlerClient(String serviceName, String timeOut) throws Exception {
-        handle = new STAFHandle("STAF/Service/" + serviceName);
+        this(serviceName, "local", timeOut);
+    }
 
-        // Resolve the machine name variable for the local machine
-        STAFResult res = STAFUtil.resolveInitVar("{STAF/Config/Machine}", handle);
-        if (res.rc != STAFResult.Ok) {
-            throw new Exception("can not get machine");
-        }
-        localMachineName = res.result;
+    public DefaultHandlerClient(String serviceName, String localMachineName, String timeOut) throws STAFException {
+        handle = new STAFHandle("STAF/Service/" + serviceName);
+        this.localMachineName = localMachineName;
         this.timeOut = timeOut;
     }
 
@@ -51,11 +50,7 @@ public class DefaultHandlerClient implements HandlerClient {
 
     @Override
     public String getError(int rc) {
-        STAFResult result = getErrorDesc(rc);
-        if (result.rc == 0) {
-            return result.result;
-        }
-        return "cannot get error code : " + rc;
+        return getErrorDesc(rc).result;
     }
 
     private STAFResult getErrorDesc(int rc) {
@@ -67,6 +62,7 @@ public class DefaultHandlerClient implements HandlerClient {
         STAFResult result = handle.submit2(this.localMachineName, "QUEUE", "DELETE");
 
         if (result.rc != 0) {
+            Logger.error(result.result);
             return result;
         }
 
