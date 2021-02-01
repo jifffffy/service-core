@@ -8,18 +8,16 @@ import org.pmw.tinylog.Logger;
 import org.springframework.util.StringUtils;
 import org.sunyuyangg.service.core.Util;
 
-import java.util.List;
-import java.util.Map;
-
 public class DefaultHandlerClient implements HandlerClient {
 
+    // 默认无限等待
     private final String DEFAULT_QUEUE_TIMEOUT = "5m";
 
     private STAFHandle handle;
     private String localMachineName;
     private String timeOut = "";
 
-    public DefaultHandlerClient(String serviceName) throws Exception {
+    public DefaultHandlerClient(String serviceName, String timeOut) throws Exception {
         handle = new STAFHandle("STAF/Service/" + serviceName);
 
         // Resolve the machine name variable for the local machine
@@ -28,16 +26,15 @@ public class DefaultHandlerClient implements HandlerClient {
             throw new Exception("can not get machine");
         }
         localMachineName = res.result;
-    }
-
-    public DefaultHandlerClient(STAFHandle handle, String localMachineName) {
-        this.handle = handle;
-        this.localMachineName = localMachineName;
-    }
-
-    public void setTimeOut(String timeOut) {
         this.timeOut = timeOut;
     }
+
+    public DefaultHandlerClient(STAFHandle handle, String localMachineName, String timeOut) {
+        this.handle = handle;
+        this.localMachineName = localMachineName;
+        this.timeOut = timeOut;
+    }
+
 
     @Override
     public STAFResult waitForQueueType(String... types) {
@@ -52,7 +49,27 @@ public class DefaultHandlerClient implements HandlerClient {
         return this.handle.submit2(this.localMachineName, "QUEUE", createRequest(object, type));
     }
 
+    @Override
+    public String getError(int rc) {
+        STAFResult result = getErrorDesc(rc);
+        if (result.rc == 0) {
+            return result.result;
+        }
+        return "cannot get error code : " + rc;
+    }
+
+    private STAFResult getErrorDesc(int rc) {
+        return this.handle.submit2("local", "help", "error " + rc);
+    }
+
     private STAFResult waitForQueueTypeWithTimeout(String timeout, String... types) {
+        //提交前删除队列里面的消息
+        STAFResult result = handle.submit2("local", "QUEUE", "DELETE");
+
+        if (result.rc != 0) {
+            return result;
+        }
+
         StringBuffer request = new StringBuffer();
 
         request.append(" GET WAIT ")

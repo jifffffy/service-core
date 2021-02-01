@@ -20,6 +20,7 @@ public class DefaultViewer implements View {
         STAFMarshallingContext context = new STAFMarshallingContext();
 
         Object object = model.getModel();
+        response.resultObj = object;
         if(object == null){
             response.result = "";
         } else if(object instanceof String) {

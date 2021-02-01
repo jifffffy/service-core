@@ -62,6 +62,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
         resolvers.add(new StringHandlerMethodArgumentResolver());
         resolvers.add(new OptionTimesHandlerMethodArgumentResolver());
         resolvers.add(new JsonHandlerMethodArgumentResolver());
+        resolvers.add(new EnumHandlerMethodArgumentResolver());
         // Custom arguments
         if (getCustomArgumentResolvers() != null) {
             resolvers.addAll(getCustomArgumentResolvers());

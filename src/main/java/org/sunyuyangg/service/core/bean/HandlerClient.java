@@ -7,4 +7,6 @@ public interface HandlerClient {
     STAFResult waitForQueueType(String... types);
 
     STAFResult submit(Object object, String type);
+
+    String getError(int rc);
 }

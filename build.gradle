@@ -20,6 +20,7 @@ dependencies {
     compile 'org.springframework:spring-context-support:5.0.11.RELEASE'
     compile 'com.fasterxml.jackson.core:jackson-core:2.9.8'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+    compile 'org.apache.commons:commons-lang3:3.4'
     testCompile 'com.github.oshi:oshi-core:4.0.0-SNAPSHOT'
     testCompile 'junit:junit:4.12'
 }
