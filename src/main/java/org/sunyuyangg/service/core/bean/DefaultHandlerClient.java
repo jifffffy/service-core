@@ -13,8 +13,8 @@ public class DefaultHandlerClient implements HandlerClient {
     // 默认无限等待
     private final String DEFAULT_QUEUE_TIMEOUT = "5m";
 
-    private STAFHandle handle;
-    private String localMachineName;
+    private final STAFHandle handle;
+    private final String localMachineName;
     private String timeOut = "";
 
     public DefaultHandlerClient(String serviceName, String timeOut) throws Exception {
@@ -59,12 +59,12 @@ public class DefaultHandlerClient implements HandlerClient {
     }
 
     private STAFResult getErrorDesc(int rc) {
-        return this.handle.submit2("local", "help", "error " + rc);
+        return this.handle.submit2(this.localMachineName, "help", "error " + rc);
     }
 
     private STAFResult waitForQueueTypeWithTimeout(String timeout, String... types) {
         //提交前删除队列里面的消息
-        STAFResult result = handle.submit2("local", "QUEUE", "DELETE");
+        STAFResult result = handle.submit2(this.localMachineName, "QUEUE", "DELETE");
 
         if (result.rc != 0) {
             return result;
